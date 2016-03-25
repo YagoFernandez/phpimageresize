@@ -107,6 +107,11 @@ function commandWithCrop($imagePath, $newPath, $configuration) {
 }
 
 function doResize($imagePath, $newPath, $configuration) {
+	$cmd = selectCommand($imagePath, $newPath, $configuration);
+	executeCommand($cmd);
+}
+
+function selectCommand($imagePath, $newPath, $configuration) {
 	$opts = $configuration->asHash();
 	$w = $configuration->obtainWidth();
 	$h = $configuration->obtainHeight();
@@ -120,6 +125,10 @@ function doResize($imagePath, $newPath, $configuration) {
 		$cmd = defaultShellCommand($configuration, $imagePath, $newPath);
 	endif;
 
+	return $cmd;
+}
+
+function executeCommand($cmd) {
 	$c = exec($cmd, $output, $return_code);
 	if($return_code != 0) {
 		error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
