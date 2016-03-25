@@ -44,19 +44,6 @@ function composeNewPath($imagePath, $configuration) {
 	return $newPath;
 }
 
-function defaultShellCommand($configuration, $imagePath, $newPath) {
-	$opts = $configuration->asHash();
-	$w = $configuration->obtainWidth();
-	$h = $configuration->obtainHeight();
-
-	$command = $configuration->obtainConvertPath() ." " . escapeshellarg($imagePath) .
-	" -thumbnail ". (!empty($h) ? 'x':'') . $w ."".
-	(isset($opts['maxOnly']) && $opts['maxOnly'] == true ? "\>" : "") .
-	" -quality ". escapeshellarg($opts['quality']) ." ". escapeshellarg($newPath);
-
-	return $command;
-}
-
 function isPanoramic($imagePath) {
 	list($width,$height) = getimagesize($imagePath);
 	return $width > $height;
@@ -122,7 +109,8 @@ function selectCommand($imagePath, $newPath, $configuration) {
 			$cmd = commandWithScale($imagePath, $newPath, $configuration);
 		endif;
 	else:
-		$cmd = defaultShellCommand($configuration, $imagePath, $newPath);
+		$command = new DefaultCommand();
+		$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 	endif;
 
 	return $cmd;
