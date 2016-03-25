@@ -144,12 +144,6 @@ function resize($imagePath,$opts=null){
 
 	$resizer = new Resizer($path, $configuration);
 
-	// This has to go to Configuration as Exception in initialization
-
-	if(empty($configuration->asHash()['output-filename']) && empty($w) && empty($h)) {
-		return 'cannot resize the image';
-	}
-
 	// This has to be done in resizer resize
 
 	try {

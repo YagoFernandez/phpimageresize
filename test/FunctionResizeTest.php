@@ -15,8 +15,8 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         'remoteFolder' => './cache/remote/',
         'quality' => 90,
         'cache_http_minutes' => 20,
-        'width' => null,
-        'height' => null
+        'width' => 1,
+        'height' => 1
     );
 
     public function testOpts()
@@ -67,6 +67,19 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
         $configuration = new Configuration();
 
         $this->assertEquals('convert', $configuration->obtainConvertPath());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testNoMinimumParameters() {
+        $opts = array(
+            'output-filename' => null,
+            'width' => null,
+            'height' => null
+        );
+
+        $configuration = new Configuration($opts);
     }
 }
 

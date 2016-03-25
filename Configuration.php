@@ -28,10 +28,16 @@ class Configuration {
             self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
             'cache_http_minutes' => 20,
-            'width' => null,
-            'height' => null);
+            'width' => 1,
+            'height' => 1);
 
         $this->opts = array_merge($defaults, $sanitized);
+
+        if(empty($this->opts['output-filename'])
+            && empty($this->opts['width'])
+                && empty($this->opts['height'])) {
+            throw new InvalidArgumentException('cannot resize the image');
+        }
     }
 
     public function asHash() {
