@@ -44,55 +44,6 @@ function composeNewPath($imagePath, $configuration) {
 	return $newPath;
 }
 
-function isPanoramic($imagePath) {
-	list($width,$height) = getimagesize($imagePath);
-	return $width > $height;
-}
-
-function composeResizeOptions($imagePath, $configuration) {
-	$opts = $configuration->asHash();
-	$w = $configuration->obtainWidth();
-	$h = $configuration->obtainHeight();
-
-	$resize = "x".$h;
-
-	$hasCrop = (true === $opts['crop']);
-
-	if(!$hasCrop && isPanoramic($imagePath)):
-		$resize = $w;
-	endif;
-
-	if($hasCrop && !isPanoramic($imagePath)):
-		$resize = $w;
-	endif;
-
-	return $resize;
-}
-
-function commandWithScale($imagePath, $newPath, $configuration) {
-	$opts = $configuration->asHash();
-	$resize = composeResizeOptions($imagePath, $configuration);
-
-	$cmd = $configuration->obtainConvertPath() ." ". escapeshellarg($imagePath) ." -resize ". escapeshellarg($resize) .
-		" -quality ". escapeshellarg($opts['quality']) . " " . escapeshellarg($newPath);
-
-	return $cmd;
-}
-
-function commandWithCrop($imagePath, $newPath, $configuration) {
-	$opts = $configuration->asHash();
-	$w = $configuration->obtainWidth();
-	$h = $configuration->obtainHeight();
-	$resize = composeResizeOptions($imagePath, $configuration);
-
-	$cmd = $configuration->obtainConvertPath() ." ". escapeshellarg($imagePath) ." -resize ". escapeshellarg($resize) .
-		" -size ". escapeshellarg($w ."x". $h) .
-		" xc:". escapeshellarg($opts['canvas-color']) .
-		" +swap -gravity center -composite -quality ". escapeshellarg($opts['quality'])." ".escapeshellarg($newPath);
-
-	return $cmd;
-}
-
 function doResize($imagePath, $newPath, $configuration) {
 	$cmd = selectCommand($imagePath, $newPath, $configuration);
 	executeCommand($cmd);
@@ -104,9 +55,11 @@ function selectCommand($imagePath, $newPath, $configuration) {
 	$h = $configuration->obtainHeight();
 
 	if(!empty($w) and !empty($h)):
-		$cmd = commandWithCrop($imagePath, $newPath, $configuration);
+		$command = new CropCommand();
+		$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 		if(true === $opts['scale']):
-			$cmd = commandWithScale($imagePath, $newPath, $configuration);
+			$command = new ScaleCommand();
+			$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 		endif;
 	else:
 		$command = new DefaultCommand();
