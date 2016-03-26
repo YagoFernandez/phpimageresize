@@ -81,6 +81,41 @@ class FunctionResizeTest extends PHPUnit_Framework_TestCase {
 
         $configuration = new Configuration($opts);
     }
+
+
+    public function composeNewPath($imagePath, $configuration) {
+
+        $fileSystem = new FileSystem();
+        $opts = $configuration->asHash();
+
+        $w = $configuration->obtainWidth();
+        $h = $configuration->obtainHeight();
+
+        $filename = $fileSystem->file_get_md5($imagePath);
+        $ext = $fileSystem->file_get_extension($imagePath);
+
+        $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
+        $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
+        $widthSignal = !empty($w) ? '_w'.$w : '';
+        $heightSignal = !empty($h) ? '_h'.$h : '';
+        $extension = '.'.$ext;
+
+        $newPath = $configuration->obtainCache() .$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
+
+        if($opts['output-filename']) {
+            $newPath = $opts['output-filename'];
+        }
+
+        return $newPath;
+    }
+
+    public function testComposeNewPathWithoutOutputFileName() {
+
+        $configuration = new Configuration();
+        $filename = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sydney_Harbour_Bridge_night.jpg";
+        $expected = "./cache/ffd81ed315aabd739b7f0e6c1d76c697_w1_h1_sc..jpg";
+        $this->assertEquals($expected, $this->composeNewPath($filename, $configuration));
+    }
 }
 
 ?>
