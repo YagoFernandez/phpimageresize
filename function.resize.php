@@ -29,7 +29,7 @@ function composeNewPath($imagePath, $configuration) {
 	$w = $configuration->obtainWidth();
 	$h = $configuration->obtainHeight();
 
-	$filename = md5_file($imagePath);
+	$filename = $fileSystem->file_get_md5($imagePath);
 	$ext = $fileSystem->file_get_extension($imagePath);
 
 	$cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";

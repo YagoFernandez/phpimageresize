@@ -18,6 +18,10 @@ class FileSystem {
         return filemtime($filename);
     }
 
+    public function file_get_md5($filename) {
+        return md5_file($filename);
+    }
+
     public function file_get_extension($filename) {
         $finfo = pathinfo($filename);
         $ext = $finfo['extension'];
