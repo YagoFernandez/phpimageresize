@@ -9,7 +9,7 @@
 class DefaultCommand
 {
 
-    public function obtainCommand($configuration, $imagePath, $newPath) {
+    public function obtainCommand($imagePath, $newPath, $configuration) {
         $opts = $configuration->asHash();
         $w = $configuration->obtainWidth();
         $h = $configuration->obtainHeight();

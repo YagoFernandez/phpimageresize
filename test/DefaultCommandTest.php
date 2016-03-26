@@ -22,6 +22,6 @@ class DefaultCommandTest extends PHPUnit_Framework_TestCase
 
         $command = new DefaultCommand();
 
-        $this->assertEquals($expectedCommand, $command->obtainCommand($configuration, $imagePath, $newPath));
+        $this->assertEquals($expectedCommand, $command->obtainCommand($imagePath, $newPath, $configuration));
     }
 }
