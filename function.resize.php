@@ -54,17 +54,16 @@ function selectCommand($imagePath, $newPath, $configuration) {
 	$w = $configuration->obtainWidth();
 	$h = $configuration->obtainHeight();
 
+	$command = new DefaultCommand();
+
 	if(!empty($w) and !empty($h)):
 		$command = new CropCommand();
-		$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 		if(true === $opts['scale']):
 			$command = new ScaleCommand();
-			$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 		endif;
-	else:
-		$command = new DefaultCommand();
-		$cmd = $command->obtainCommand($configuration, $imagePath, $newPath);
 	endif;
+
+	$cmd = $command->obtainCommand($imagePath, $newPath, $configuration);
 
 	return $cmd;
 }
