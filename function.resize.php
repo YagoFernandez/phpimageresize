@@ -23,11 +23,14 @@ function isInCache($path, $imagePath) {
 }
 
 function composeNewPath($imagePath, $configuration) {
+
+	$fileSystem = new FileSystem();
+
 	$w = $configuration->obtainWidth();
 	$h = $configuration->obtainHeight();
+
 	$filename = md5_file($imagePath);
-	$finfo = pathinfo($imagePath);
-	$ext = $finfo['extension'];
+	$ext = $fileSystem->file_get_extension($imagePath);
 
 	$cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
 	$scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
@@ -42,38 +45,6 @@ function composeNewPath($imagePath, $configuration) {
 	}
 
 	return $newPath;
-}
-
-function doResize($imagePath, $newPath, $configuration) {
-	$cmd = selectCommand($imagePath, $newPath, $configuration);
-	executeCommand($cmd);
-}
-
-function selectCommand($imagePath, $newPath, $configuration) {
-	$opts = $configuration->asHash();
-	$w = $configuration->obtainWidth();
-	$h = $configuration->obtainHeight();
-
-	$command = new DefaultCommand();
-
-	if(!empty($w) and !empty($h)):
-		$command = new CropCommand();
-		if(true === $opts['scale']):
-			$command = new ScaleCommand();
-		endif;
-	endif;
-
-	$cmd = $command->obtainCommand($imagePath, $newPath, $configuration);
-
-	return $cmd;
-}
-
-function executeCommand($cmd) {
-	$c = exec($cmd, $output, $return_code);
-	if($return_code != 0) {
-		error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
-		throw new RuntimeException();
-	}
 }
 
 function resize($imagePath,$opts=null){
@@ -111,4 +82,36 @@ function resize($imagePath,$opts=null){
 
 	return $cacheFilePath;
 	
+}
+
+function doResize($imagePath, $newPath, $configuration) {
+	$cmd = selectCommand($imagePath, $newPath, $configuration);
+	executeCommand($cmd);
+}
+
+function selectCommand($imagePath, $newPath, $configuration) {
+	$opts = $configuration->asHash();
+	$w = $configuration->obtainWidth();
+	$h = $configuration->obtainHeight();
+
+	$command = new DefaultCommand();
+
+	if(!empty($w) and !empty($h)):
+		$command = new CropCommand();
+		if(true === $opts['scale']):
+			$command = new ScaleCommand();
+		endif;
+	endif;
+
+	$cmd = $command->obtainCommand($imagePath, $newPath, $configuration);
+
+	return $cmd;
+}
+
+function executeCommand($cmd) {
+	$c = exec($cmd, $output, $return_code);
+	if($return_code != 0) {
+		error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
+		throw new RuntimeException();
+	}
 }

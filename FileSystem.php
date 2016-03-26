@@ -18,4 +18,9 @@ class FileSystem {
         return filemtime($filename);
     }
 
+    public function file_get_extension($filename) {
+        $finfo = pathinfo($filename);
+        $ext = $finfo['extension'];
+        return '.' . $ext;
+    }
 }
