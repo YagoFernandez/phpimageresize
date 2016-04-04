@@ -8,6 +8,10 @@
  */
 class NewPath
 {
+    const CROP_SIGNAL = "_cp";
+    const SCALE_SIGNAL = "_sc";
+    const WIDTH_SIGNAL = "_w";
+    const HEIGHT_SIGNAL = "_h";
 
     private $imagePath;
     private $configuration;
@@ -27,7 +31,7 @@ class NewPath
         } else {
             $newPath = $this->buildNewPathName();
         }
-        
+
         return $newPath;
     }
 
@@ -56,7 +60,7 @@ class NewPath
         $result = "";
 
         if (isset($crop) && $crop == true)
-            $result = "_cp";
+            $result = self::CROP_SIGNAL;
 
         return $result;
     }
@@ -67,7 +71,7 @@ class NewPath
         $result = "";
 
         if (isset($scale) && $scale == true)
-            $result = "_sc";
+            $result = self::SCALE_SIGNAL;
 
         return $result;
     }
@@ -78,7 +82,7 @@ class NewPath
         $result = "";
 
         if (!empty($width))
-            $result = "_w".$width;
+            $result = self::WIDTH_SIGNAL.$width;
 
         return $result;
     }
@@ -89,7 +93,7 @@ class NewPath
         $result = "";
 
         if (!empty($height))
-            $result = "_h".$height;
+            $result = self::HEIGHT_SIGNAL.$height;
 
         return $result;
     }
