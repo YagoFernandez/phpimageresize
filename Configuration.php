@@ -11,6 +11,7 @@ class Configuration {
     const HEIGHT_KEY = 'height';
     const CROP_KEY = 'crop';
     const SCALE_KEY = 'scale';
+    const OUTPUT_FILE_NAME_KEY = 'output-filename';
 
     const CONVERT_PATH = 'convert';
 
@@ -25,7 +26,7 @@ class Configuration {
             'thumbnail' => false,
             'maxOnly' => false,
             'canvas-color' => 'transparent',
-            'output-filename' => false,
+            self::OUTPUT_FILE_NAME_KEY => false,
             self::CACHE_KEY => self::CACHE_PATH,
             self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
@@ -72,6 +73,10 @@ class Configuration {
 
     public function obtainScale() {
         return $this->opts[self::SCALE_KEY];
+    }
+
+    public function obtainOutputFileName() {
+        return $this->opts[self::OUTPUT_FILE_NAME_KEY];
     }
 
     public function obtainCacheMinutes() {
