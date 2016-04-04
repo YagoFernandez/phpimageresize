@@ -29,10 +29,10 @@ class NewPath
         $filename = $fileSystem->file_get_md5($this->imagePath);
         $ext = $fileSystem->file_get_extension($this->imagePath);
 
-        $cropSignal = isset($opts['crop']) && $opts['crop'] == true ? "_cp" : "";
-        $scaleSignal = isset($opts['scale']) && $opts['scale'] == true ? "_sc" : "";
-        $widthSignal = !empty($w) ? '_w'.$w : '';
-        $heightSignal = !empty($h) ? '_h'.$h : '';
+        $cropSignal = $this->obtainCropSignal($opts['crop']);
+        $scaleSignal = $this->obtainScaleSignal($opts['scale']);
+        $widthSignal = $this->obtainWidthSignal($this->configuration->obtainWidth());
+        $heightSignal = $this->obtainHeightSignal($this->configuration->obtainHeight());
 
         $extension = '.'.$ext;
 
@@ -44,4 +44,45 @@ class NewPath
 
         return $newPath;
     }
+
+    private function obtainCropSignal($crop) {
+
+        $result = "";
+
+        if (isset($crop) && $crop == true)
+            $result = "_cp";
+
+        return $result;
+    }
+
+    private function obtainScaleSignal($scale) {
+
+        $result = "";
+
+        if (isset($scale) && $scale == true)
+            $result = "_sc";
+
+        return $result;
+    }
+
+    private function obtainWidthSignal($width) {
+
+        $result = "";
+
+        if (!empty($width))
+            $result = "_w".$width;
+
+        return $result;
+    }
+
+    private function obtainHeightSignal($height) {
+
+        $result = "";
+
+        if (!empty($height))
+            $result = "_h".$height;
+
+        return $result;
+    }
+
 }
