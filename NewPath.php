@@ -22,22 +22,23 @@ class NewPath
 
     public function composeNewPath() {
 
-        $opts = $this->configuration->asHash();
-
-        $filename = $this->obtainFileName();
-        $extension = $this->obtainExtension();
-        $cropSignal = $this->obtainCropSignal();
-        $scaleSignal = $this->obtainScaleSignal();
-        $widthSignal = $this->obtainWidthSignal();
-        $heightSignal = $this->obtainHeightSignal();
-
-
-        $newPath = $this->configuration->obtainCache() .$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
-
-        if($opts['output-filename']) {
-            $newPath = $opts['output-filename'];
+        if($this->existsOutputFileName()) {
+            $newPath = $this->configuration->obtainOutputFileName();
+        } else {
+            $newPath = $this->buildNewPathName();
         }
+        
+        return $newPath;
+    }
 
+    private function buildNewPathName() {
+        $newPath = $this->configuration->obtainCache()
+            .$this->obtainFileName()
+            .$this->obtainWidthSignal()
+            .$this->obtainHeightSignal()
+            .$this->obtainCropSignal()
+            .$this->obtainScaleSignal()
+            .$this->obtainExtension();
         return $newPath;
     }
 
@@ -91,6 +92,10 @@ class NewPath
             $result = "_h".$height;
 
         return $result;
+    }
+
+    private function existsOutputFileName() {
+        return $this->configuration->obtainOutputFileName();
     }
 
 }
