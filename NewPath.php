@@ -11,25 +11,25 @@ class NewPath
 
     private $imagePath;
     private $configuration;
+    private $fileSystem;
 
     function __construct($imagePath, $configuration)
     {
         $this->imagePath = $imagePath;
         $this->configuration = $configuration;
+        $this->fileSystem = new FileSystem();
     }
 
     public function composeNewPath() {
 
-        $fileSystem = new FileSystem();
         $opts = $this->configuration->asHash();
 
-        $filename = $fileSystem->file_get_md5($this->imagePath);
-        $extension = $fileSystem->file_get_extension($this->imagePath);
-
-        $cropSignal = $this->obtainCropSignal($opts['crop']);
-        $scaleSignal = $this->obtainScaleSignal($opts['scale']);
-        $widthSignal = $this->obtainWidthSignal($this->configuration->obtainWidth());
-        $heightSignal = $this->obtainHeightSignal($this->configuration->obtainHeight());
+        $filename = $this->obtainFileName();
+        $extension = $this->obtainExtension();
+        $cropSignal = $this->obtainCropSignal();
+        $scaleSignal = $this->obtainScaleSignal();
+        $widthSignal = $this->obtainWidthSignal();
+        $heightSignal = $this->obtainHeightSignal();
 
 
         $newPath = $this->configuration->obtainCache() .$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
@@ -41,8 +41,17 @@ class NewPath
         return $newPath;
     }
 
-    private function obtainCropSignal($crop) {
+    private function obtainFileName() {
+        return $this->fileSystem->file_get_md5($this->imagePath);
+    }
 
+    private function obtainExtension() {
+        return $this->fileSystem->file_get_extension($this->imagePath);
+    }
+
+    private function obtainCropSignal() {
+
+        $crop = $this->configuration->obtainCrop();
         $result = "";
 
         if (isset($crop) && $crop == true)
@@ -51,8 +60,9 @@ class NewPath
         return $result;
     }
 
-    private function obtainScaleSignal($scale) {
+    private function obtainScaleSignal() {
 
+        $scale = $this->configuration->obtainScale();
         $result = "";
 
         if (isset($scale) && $scale == true)
@@ -61,8 +71,9 @@ class NewPath
         return $result;
     }
 
-    private function obtainWidthSignal($width) {
+    private function obtainWidthSignal() {
 
+        $width = $this->configuration->obtainWidth();
         $result = "";
 
         if (!empty($width))
@@ -71,8 +82,9 @@ class NewPath
         return $result;
     }
 
-    private function obtainHeightSignal($height) {
+    private function obtainHeightSignal() {
 
+        $height = $this->configuration->obtainHeight();
         $result = "";
 
         if (!empty($height))
