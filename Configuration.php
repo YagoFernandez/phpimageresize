@@ -9,6 +9,8 @@ class Configuration {
     const CACHE_MINUTES_KEY = 'cache_http_minutes';
     const WIDTH_KEY = 'width';
     const HEIGHT_KEY = 'height';
+    const CROP_KEY = 'crop';
+    const SCALE_KEY = 'scale';
 
     const CONVERT_PATH = 'convert';
 
@@ -18,8 +20,8 @@ class Configuration {
         $sanitized= $this->sanitize($opts);
 
         $defaults = array(
-            'crop' => false,
-            'scale' => 'false',
+            self::CROP_KEY => false,
+            self::SCALE_KEY => 'false',
             'thumbnail' => false,
             'maxOnly' => false,
             'canvas-color' => 'transparent',
@@ -28,8 +30,8 @@ class Configuration {
             self::REMOTE_KEY => self::REMOTE_PATH,
             'quality' => 90,
             'cache_http_minutes' => 20,
-            'width' => 1,
-            'height' => 1);
+            SELF::WIDTH_KEY => 1,
+            SELF::HEIGHT_KEY => 1);
 
         $this->opts = array_merge($defaults, $sanitized);
 
@@ -62,6 +64,14 @@ class Configuration {
 
     public function obtainHeight() {
         return $this->opts[self::HEIGHT_KEY];
+    }
+
+    public function obtainCrop() {
+        return $this->opts[self::CROP_KEY];
+    }
+
+    public function obtainScale() {
+        return $this->opts[self::SCALE_KEY];
     }
 
     public function obtainCacheMinutes() {
