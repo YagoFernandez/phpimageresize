@@ -18,7 +18,7 @@ class NewPathTest extends PHPUnit_Framework_TestCase
         $filename = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sydney_Harbour_Bridge_night.jpg";
         $newPath = new NewPath($filename, $configuration);
 
-        $expected = "./cache/ffd81ed315aabd739b7f0e6c1d76c697_w1_h1_sc..jpg";
+        $expected = "./cache/ffd81ed315aabd739b7f0e6c1d76c697_w1_h1_sc.jpg";
         $this->assertEquals($expected, $newPath->composeNewPath());
     }
 

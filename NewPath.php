@@ -23,18 +23,14 @@ class NewPath
         $fileSystem = new FileSystem();
         $opts = $this->configuration->asHash();
 
-        $w = $this->configuration->obtainWidth();
-        $h = $this->configuration->obtainHeight();
-
         $filename = $fileSystem->file_get_md5($this->imagePath);
-        $ext = $fileSystem->file_get_extension($this->imagePath);
+        $extension = $fileSystem->file_get_extension($this->imagePath);
 
         $cropSignal = $this->obtainCropSignal($opts['crop']);
         $scaleSignal = $this->obtainScaleSignal($opts['scale']);
         $widthSignal = $this->obtainWidthSignal($this->configuration->obtainWidth());
         $heightSignal = $this->obtainHeightSignal($this->configuration->obtainHeight());
 
-        $extension = '.'.$ext;
 
         $newPath = $this->configuration->obtainCache() .$filename.$widthSignal.$heightSignal.$cropSignal.$scaleSignal.$extension;
 
