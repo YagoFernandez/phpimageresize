@@ -37,14 +37,14 @@ function resize($imagePath,$opts=null){
 	} catch (Exception $e) {
 		return 'image not found';
 	}
-	
+
 	$newPath = $resizer->obtainNewPath($imagePath);
 
     $create = !isInCache($newPath, $imagePath);
 
 	if($create == true):
 		try {
-			doResize($imagePath, $newPath, $configuration);
+			$resizer->doResize($imagePath, $newPath, $configuration);
 		} catch (Exception $e) {
 			return 'cannot resize the image';
 		}
@@ -58,34 +58,3 @@ function resize($imagePath,$opts=null){
 	
 }
 
-function doResize($imagePath, $newPath, $configuration) {
-	$cmd = selectCommand($imagePath, $newPath, $configuration);
-	executeCommand($cmd);
-}
-
-function selectCommand($imagePath, $newPath, $configuration) {
-	$opts = $configuration->asHash();
-	$w = $configuration->obtainWidth();
-	$h = $configuration->obtainHeight();
-
-	$command = new DefaultCommand();
-
-	if(!empty($w) and !empty($h)):
-		$command = new CropCommand();
-		if(true === $opts['scale']):
-			$command = new ScaleCommand();
-		endif;
-	endif;
-
-	$cmd = $command->obtainCommand($imagePath, $newPath, $configuration);
-
-	return $cmd;
-}
-
-function executeCommand($cmd) {
-	$c = exec($cmd, $output, $return_code);
-	if($return_code != 0) {
-		error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
-		throw new RuntimeException();
-	}
-}

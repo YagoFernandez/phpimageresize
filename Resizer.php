@@ -1,12 +1,17 @@
 <?php
 
 require 'FileSystem.php';
+require 'NewPath.php';
+require 'DefaultCommand.php';
+require 'CropCommand.php';
+require 'ScaleCommand.php';
 
 class Resizer {
 
     private $path;
     private $configuration;
     private $fileSystem;
+    private $newPath;
 
     public function __construct($path, $configuration=null) {
         if ($configuration == null) $configuration = new Configuration();
@@ -15,6 +20,7 @@ class Resizer {
         $this->path = $path;
         $this->configuration = $configuration;
         $this->fileSystem = new FileSystem();
+        $this->newPath = new newPath($configuration);
     }
 
     public function injectFileSystem(FileSystem $fileSystem) {
@@ -44,6 +50,11 @@ class Resizer {
 
         return $imagePath;
     }
+    
+    public function obtainNewPath($imagePath) {
+        $result = $this->newPath->composeNewPath($imagePath);
+        return $result;
+    }
 
 
     private function download($filePath) {
@@ -71,4 +82,35 @@ class Resizer {
         if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
     }
 
+    function doResize($imagePath, $newPath, $configuration) {
+        $cmd = selectCommand($imagePath, $newPath, $configuration);
+        executeCommand($cmd);
+    }
+
+    function selectCommand($imagePath, $newPath, $configuration) {
+        $opts = $configuration->asHash();
+        $w = $configuration->obtainWidth();
+        $h = $configuration->obtainHeight();
+
+        $command = new DefaultCommand();
+
+        if(!empty($w) and !empty($h)):
+            $command = new CropCommand();
+            if(true === $opts['scale']):
+                $command = new ScaleCommand();
+            endif;
+        endif;
+
+        $cmd = $command->obtainCommand($imagePath, $newPath, $configuration);
+
+        return $cmd;
+    }
+
+    function executeCommand($cmd) {
+        $c = exec($cmd, $output, $return_code);
+        if($return_code != 0) {
+            error_log("Tried to execute : $cmd, return code: $return_code, output: " . print_r($output, true));
+            throw new RuntimeException();
+        }
+    }
 }
