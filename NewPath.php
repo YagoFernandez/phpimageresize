@@ -17,41 +17,40 @@ class NewPath
     private $configuration;
     private $fileSystem;
 
-    function __construct($imagePath, $configuration)
+    function __construct($configuration)
     {
-        $this->imagePath = $imagePath;
         $this->configuration = $configuration;
         $this->fileSystem = new FileSystem();
     }
 
-    public function composeNewPath() {
+    public function composeNewPath($imagePath) {
 
         if($this->existsOutputFileName()) {
             $newPath = $this->configuration->obtainOutputFileName();
         } else {
-            $newPath = $this->buildNewPathName();
+            $newPath = $this->buildNewPathName($imagePath);
         }
 
         return $newPath;
     }
 
-    private function buildNewPathName() {
+    private function buildNewPathName($imagePath) {
         $newPath = $this->configuration->obtainCache()
-            .$this->obtainFileName()
+            .$this->obtainFileName($imagePath)
             .$this->obtainWidthSignal()
             .$this->obtainHeightSignal()
             .$this->obtainCropSignal()
             .$this->obtainScaleSignal()
-            .$this->obtainExtension();
+            .$this->obtainExtension($imagePath);
         return $newPath;
     }
 
-    private function obtainFileName() {
-        return $this->fileSystem->file_get_md5($this->imagePath);
+    private function obtainFileName($imagePath) {
+        return $this->fileSystem->file_get_md5($imagePath);
     }
 
-    private function obtainExtension() {
-        return $this->fileSystem->file_get_extension($this->imagePath);
+    private function obtainExtension($imagePath) {
+        return $this->fileSystem->file_get_extension($imagePath);
     }
 
     private function obtainCropSignal() {
