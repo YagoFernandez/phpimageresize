@@ -37,9 +37,8 @@ function resize($imagePath,$opts=null){
 	} catch (Exception $e) {
 		return 'image not found';
 	}
-
-	$newPathObject = new NewPath($imagePath, $configuration);
-	$newPath = $newPathObject->composeNewPath();
+	
+	$newPath = $resizer->obtainNewPath($imagePath);
 
     $create = !isInCache($newPath, $imagePath);
 
