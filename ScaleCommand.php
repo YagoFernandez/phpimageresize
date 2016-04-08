@@ -1,12 +1,13 @@
 <?php
 
+require 'Command.php';
 /**
  * Created by PhpStorm.
  * User: yago
  * Date: 25/03/16
  * Time: 22:01
  */
-class ScaleCommand
+class ScaleCommand extends Command
 {
     const RESIZE_OPTION = " -resize ";
     const QUALITY_OPTION = " -quality ";
@@ -24,28 +25,4 @@ class ScaleCommand
         return $cmd;
     }
 
-    private function isPanoramic($imagePath) {
-        list($width,$height) = getimagesize($imagePath);
-        return $width > $height;
-    }
-
-    private function composeResizeOptions($imagePath, $configuration) {
-        $opts = $configuration->asHash();
-        $w = $configuration->obtainWidth();
-        $h = $configuration->obtainHeight();
-
-        $resize = "x".$h;
-
-        $hasCrop = (true === $configuration->obtainCrop());
-
-        if(!$hasCrop && $this->isPanoramic($imagePath)):
-            $resize = $w;
-        endif;
-
-        if($hasCrop && !$this->isPanoramic($imagePath)):
-            $resize = $w;
-        endif;
-
-        return $resize;
-    }
 }
