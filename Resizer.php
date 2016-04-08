@@ -85,14 +85,14 @@ class Resizer {
     function doResize() {
 
         try {
-            $imagePath = obtainFilePath();
+            $imagePath = $this->obtainFilePath();
         } catch (Exception $e) {
             return 'image not found';
         }
 
-        $newPath = obtainNewPath($imagePath);
+        $newPath = $this->obtainNewPath($imagePath);
 
-        $create = !isNewPathInCache($newPath, $imagePath);
+        $create = !$this->isNewPathInCache($newPath, $imagePath);
 
         if($create == true):
             try {
