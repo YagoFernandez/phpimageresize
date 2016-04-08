@@ -16,10 +16,10 @@ class NewPathTest extends PHPUnit_Framework_TestCase
 
         $configuration = new Configuration();
         $filename = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sydney_Harbour_Bridge_night.jpg";
-        $newPath = new NewPath($filename, $configuration);
+        $newPath = new NewPath($configuration);
 
         $expected = "./cache/ffd81ed315aabd739b7f0e6c1d76c697_w1_h1_sc.jpg";
-        $this->assertEquals($expected, $newPath->composeNewPath());
+        $this->assertEquals($expected, $newPath->composeNewPath($filename));
     }
 
     public function testComposeNewPathWithOutputFileName() {
@@ -30,8 +30,8 @@ class NewPathTest extends PHPUnit_Framework_TestCase
 
         $configuration = new Configuration($opts);
         $filename = "https://upload.wikimedia.org/wikipedia/commons/e/ea/Sydney_Harbour_Bridge_night.jpg";
-        $newPath = new NewPath($filename, $configuration);
+        $newPath = new NewPath($configuration);
 
-        $this->assertEquals("myfilename.ext", $newPath->composeNewPath());
+        $this->assertEquals("myfilename.ext", $newPath->composeNewPath($filename));
     }
 }
