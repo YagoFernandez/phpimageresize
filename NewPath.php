@@ -12,8 +12,7 @@ class NewPath
     const SCALE_SIGNAL = "_sc";
     const WIDTH_SIGNAL = "_w";
     const HEIGHT_SIGNAL = "_h";
-
-    private $imagePath;
+    
     private $configuration;
     private $fileSystem;
 
