@@ -82,9 +82,28 @@ class Resizer {
         if (!($configuration instanceof Configuration)) throw new InvalidArgumentException();
     }
 
-    function doResize($imagePath, $newPath, $configuration) {
-        $cmd = selectCommand($imagePath, $newPath, $configuration);
-        executeCommand($cmd);
+    function doResize() {
+
+        try {
+            $imagePath = obtainFilePath();
+        } catch (Exception $e) {
+            return 'image not found';
+        }
+
+        $newPath = obtainNewPath($imagePath);
+
+        $create = !isNewPathInCache($newPath, $imagePath);
+
+        if($create == true):
+            try {
+                $cmd = selectCommand($imagePath, $newPath, $this->configuration);
+                executeCommand($cmd);
+            } catch (Exception $e) {
+                return 'cannot resize the image';
+            }
+        endif;
+
+        return $newPath;
     }
 
     function selectCommand($imagePath, $newPath, $configuration) {
@@ -113,4 +132,19 @@ class Resizer {
             throw new RuntimeException();
         }
     }
+
+    function isNewPathInCache($path, $imagePath) {
+        $isInCache = false;
+        if(file_exists($path) == true):
+            $isInCache = true;
+            $origFileTime = date("YmdHis",filemtime($imagePath));
+            $newFileTime = date("YmdHis",filemtime($path));
+            if($newFileTime < $origFileTime): # Not using $opts['expire-time'] ??
+                $isInCache = false;
+            endif;
+        endif;
+
+        return $isInCache;
+    }
+
 }
