@@ -69,4 +69,20 @@ class ResizerTest extends PHPUnit_Framework_TestCase {
         $resizer = new Resizer(new ImagePath('http://martinfowler.com/mf.jpg?query=hello&s=fowler'));
     }
 
+    public function testIsNewPathInCache() {
+
+        $younger_file = fopen("younger.txt", "w");
+        sleep(1);
+        $older_file = fopen("older.txt", "w");
+
+        $configuration = new Configuration();
+        $imagePath = new ImagePath("older.txt");
+
+        $resizer = new Resizer($imagePath, $configuration);
+
+        $this->assertTrue($resizer->isNewPathInCache("older.txt", "younger.txt"));
+
+        unlink("younger.txt");
+        unlink("older.txt");
+    }
 }
