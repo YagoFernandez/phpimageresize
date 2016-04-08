@@ -92,9 +92,9 @@ class Resizer {
 
         $newPath = $this->obtainNewPath($imagePath);
 
-        $create = !$this->isNewPathInCache($newPath, $imagePath);
+        $isNewPathInCache = $this->isNewPathInCache($newPath, $imagePath);
 
-        if($create == true):
+        if(!$isNewPathInCache):
             try {
                 $cmd = selectCommand($imagePath, $newPath, $this->configuration);
                 executeCommand($cmd);
