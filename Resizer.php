@@ -133,18 +133,17 @@ class Resizer {
         }
     }
 
-    function isNewPathInCache($path, $imagePath) {
-        $isInCache = false;
-        if(file_exists($path) == true):
-            $isInCache = true;
-            $origFileTime = date("YmdHis",filemtime($imagePath));
-            $newFileTime = date("YmdHis",filemtime($path));
-            if($newFileTime < $origFileTime): # Not using $opts['expire-time'] ??
-                $isInCache = false;
-            endif;
-        endif;
+    public function isNewPathInCache($path, $imagePath) {
+        $fileExists = file_exists($path);
+        $fileIsMoreRecent = $this->isMoreRecent($path, $imagePath);
 
-        return $isInCache;
+        return $fileExists && !$fileIsMoreRecent;
     }
 
+    function isMoreRecent($path, $imagePath) {
+        $origFileTime = date("YmdHis", filemtime($imagePath));
+        $newFileTime = date("YmdHis", filemtime($path));
+        $isMoreRecent = $newFileTime < $origFileTime;
+        return $isMoreRecent;
+    }
 }
